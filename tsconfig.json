@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "lib": ["es6"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "rootDir": "./src",
+    "typeRoots": ["./node_modules/@types", "src/@types"],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "outDir": "./dist",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "~assets/*": ["./src/assets/*"],
+      "~config/*": ["./src/config/*"],
+      "~html/*": ["./src/html/*"],
+      "~middlewares/*": ["./src/middlewares/*"],
+      "~models/*": ["./src/models/*"],
+      "~routes/*": ["./src/routes/*"],
+      "~services/*": ["./src/services/*"],
+      "~websockets/*": ["./src/websockets/*"],
+      "~tokens/*": ["./src/tokens/*"],
+      "~types/*": ["src/@types/*"],
+      "~uploads/*": ["./src/uploads/*"],
+      "~utils/*": ["./src/utils/*"]
+    }
+  },
+  "include": ["./src/**/*"]
+}

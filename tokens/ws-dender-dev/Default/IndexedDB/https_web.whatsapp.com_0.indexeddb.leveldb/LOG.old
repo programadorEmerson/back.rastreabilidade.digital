@@ -1,0 +1,26 @@
+2022/06/12-01:42:54.194 11a0f Reusing MANIFEST /Users/emersonsaturnino/Documents/desenvolvimento/api-whatsapp/tokens/ws-dender-dev/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2022/06/12-01:42:54.194 11a0f Recovering log #1486
+2022/06/12-01:42:54.211 11a0f Reusing old log /Users/emersonsaturnino/Documents/desenvolvimento/api-whatsapp/tokens/ws-dender-dev/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/001486.log 
+2022/06/12-01:43:06.203 6b03 Level-0 table #1497: started
+2022/06/12-01:43:06.269 6b03 Level-0 table #1497: 1172467 bytes OK
+2022/06/12-01:43:06.307 6b03 Delete type=0 #1486
+2022/06/12-01:43:07.022 6b03 Compacting 1@0 + 1@1 files
+2022/06/12-01:43:07.058 6b03 Generated table #1498@0: 14869 keys, 451464 bytes
+2022/06/12-01:43:07.078 6b03 Generated table #1499@0: 13 keys, 1124 bytes
+2022/06/12-01:43:07.078 6b03 Compacted 1@0 + 1@1 files => 452588 bytes
+2022/06/12-01:43:07.116 6b03 compacted to: files[ 0 3 29 0 0 0 0 ]
+2022/06/12-01:43:07.117 6b03 Delete type=2 #1497
+2022/06/12-01:43:07.117 6b03 Delete type=2 #1489
+2022/06/12-01:43:11.980 9003 Compacting 1@1 + 4@2 files
+2022/06/12-01:43:12.079 9003 Generated table #1500@1: 30931 keys, 2260313 bytes
+2022/06/12-01:43:12.126 9003 Generated table #1501@1: 25849 keys, 2268044 bytes
+2022/06/12-01:43:12.175 9003 Generated table #1502@1: 26134 keys, 2269131 bytes
+2022/06/12-01:43:12.223 9003 Generated table #1503@1: 83924 keys, 2255529 bytes
+2022/06/12-01:43:12.244 9003 Generated table #1504@1: 273 keys, 225824 bytes
+2022/06/12-01:43:12.244 9003 Compacted 1@1 + 4@2 files => 9278841 bytes
+2022/06/12-01:43:12.281 9003 compacted to: files[ 0 2 30 0 0 0 0 ]
+2022/06/12-01:43:12.281 9003 Delete type=2 #1492
+2022/06/12-01:43:12.281 9003 Delete type=2 #1493
+2022/06/12-01:43:12.281 9003 Delete type=2 #1491
+2022/06/12-01:43:12.281 9003 Delete type=2 #1490
+2022/06/12-01:43:12.281 9003 Delete type=2 #1498
