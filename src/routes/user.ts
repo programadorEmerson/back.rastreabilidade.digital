@@ -1,50 +1,46 @@
-import { Request, Response, Router } from 'express'
-import { ValidationsUser } from '~middlewares/validations.user'
+import 'express-async-errors'
+import { Validations } from '~middlewares/validations'
 import { User } from '~models/user'
+import { Request, Response, Router } from 'express'
 
 export class RoutesUser {
   private router: Router
+  private meddlewares: Validations
 
   constructor () {
     this.router = Router()
+    this.meddlewares = new Validations()
     this.routes()
   }
 
-  get route (): Router {
-    return this.router
+  private routes () {
+    const {
+      meddlewares: { userValidator, signInValidator, tokenValidator }
+    } = this
+    this.router.post('/create', userValidator, this.createUser)
+    this.router.post('/sigin', signInValidator, this.signIn)
+    this.router.get('/me', tokenValidator, this.me)
   }
 
-  routes () {
-    this.router.post(
-      '/',
-      async (req: Request, res: Response) => {
-        res.status(200).json({ status: 'ok' })
-      })
+  private createUser = async (req: Request, res: Response) => {
+    const user = new User(req.body)
+    const token = await user.newUser()
+    res.status(200).json({ response: token })
+  }
 
-    this.router.post(
-      '/user',
-      ValidationsUser.createUser,
-      async (req: Request, res: Response) => {
-        const newUser = req.body as User
-        const user = new User(newUser)
-        user.updateUser(newUser)
-        const token = await user.newUser()
-        res.status(200).json({ response: token })
-      }
-    )
+  private signIn = async (req: Request, res: Response) => {
+    const user = new User(req.body)
+    const token = await user.login()
+    res.status(200).json({ response: token })
+  }
 
-    this.router.post(
-      '/sigin',
-      ValidationsUser.signIn,
-      async (req: Request, res: Response) => {
-        const userData = req.body as User
-        const user = new User(userData)
-        user.updateUser(userData)
-        const token = await user.sigIn()
-        res.status(200).json({ response: token })
-      }
-    )
+  private me = async (req: Request, res: Response) => {
+    const user = new User(req.body)
+    const token = await user.getUserById()
+    res.status(200).json({ response: token })
+  }
 
+  public getRouter (): Router {
     return this.router
   }
 }

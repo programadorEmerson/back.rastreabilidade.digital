@@ -1,7 +1,9 @@
-import { ObjectId } from 'mongodb'
-import { createUser, signIn } from './functions/user'
-import jwt from 'jsonwebtoken'
 import { SECRET } from '~utils/exports.utils'
+import jwt from 'jsonwebtoken'
+import { ObjectId } from 'mongodb'
+
+import { createUser, signIn, getUserById } from './functions/user'
+import { Rule } from './rules'
 
 export class User {
   _id: ObjectId
@@ -10,59 +12,63 @@ export class User {
   createdAt: string
   active: boolean
   password: string
+  urlImage: string
+  rules: Rule[]
 
-  constructor ({ _id, name = null, email = null, createdAt = null, active = null, password = null }: User) {
-    this._id = _id ? new ObjectId(_id) : new ObjectId()
-    this.name = name || ''
-    this.email = email || ''
-    this.createdAt = createdAt || new Date().toISOString()
-    this.active = active || true
-    this.password = password || undefined
+  constructor (user: User) {
+    this._id = user._id ? new ObjectId(user._id) : new ObjectId()
+    this.name = user.name || ''
+    this.email = user.email || ''
+    this.createdAt = user.createdAt || new Date().toISOString()
+    this.active = user.active || true
+    this.password = user.password || undefined
+    this.urlImage = user.urlImage || ''
+    this.rules = user.rules || []
   }
 
   updateUser (user: User): void {
     const id = user._id ? new ObjectId(user._id) : new ObjectId()
-    const createdAt = user.createdAt ? user.createdAt : new Date().toISOString()
+    const createdAt = user.createdAt || new Date().toISOString()
     const active = user.active ? user.active : true
+    const rules = user.rules || undefined
 
     this._id = id
     this.name = user.name
     this.email = user.email
     this.createdAt = createdAt
     this.password = user.password
+    this.urlImage = user.urlImage
     this.active = active
-  }
-
-  static updateUser (user: User): void {
-    this.updateUser(user)
+    this.rules = rules
   }
 
   convertToJSON (): any {
-    return {
-      _id: String(this._id),
-      name: this.name,
-      email: this.email,
-      createdAt: this.createdAt,
-      active: this.active
-    }
+    const { rules, password, ...rest } = this
+    return { ...rest }
   }
 
-  createToken = () => {
-    const userToken = jwt.sign(this.convertToJSON(), SECRET, {
+  createToken = (getRules: boolean = false) => {
+    const rules = getRules ? this.rules : undefined
+    return jwt.sign({ ...this.convertToJSON(), rules }, SECRET, {
       expiresIn: '24h'
     })
-    return userToken
   }
 
   newUser = async (): Promise<string> => {
-    await createUser(this)
-    this.password = undefined
+    this.updateUser(await createUser(this))
     return this.createToken()
   }
 
-  sigIn = async (): Promise<string> => {
-    this.updateUser(await signIn(this))
-    this.password = undefined
-    return this.createToken()
+  login = async (): Promise<string> => {
+    const { email, password } = this
+    this.updateUser(await signIn({ email, password }))
+    const token = this.createToken()
+    return token
+  }
+
+  getUserById = async (): Promise<string> => {
+    this.updateUser(await getUserById(this._id))
+    const token = this.createToken(true)
+    return token
   }
 }

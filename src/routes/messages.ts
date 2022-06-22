@@ -1,16 +1,18 @@
-import { Request, Response, Router } from 'express'
-import Sender from '~models/model'
 import { PhoneNumber } from '~middlewares/validate.phone'
-import { ValidationsUser } from '~middlewares/validations.user'
+import { ValidationsUser } from '~middlewares/validations'
+import ApiMesseger from '~models/api.messeger'
+import { Request, Response, Router } from 'express'
 
 export class RoutesWhats {
   private router: Router
-  private message: Sender
+  private message: ApiMesseger
   private phoneNumber = new PhoneNumber()
+  private userValidator: ValidationsUser
 
   constructor () {
     this.router = Router()
-    this.message = new Sender()
+    this.message = new ApiMesseger()
+    this.userValidator = new ValidationsUser()
     this.routes()
   }
 
@@ -60,7 +62,7 @@ export class RoutesWhats {
 
     router.post(
       '/create-instance',
-      ValidationsUser.decriptToken,
+      this.userValidator.decriptToken,
       async (req: Request, res: Response) => {
         // const { user } = req.body
         res.status(200).json({

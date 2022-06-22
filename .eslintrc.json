@@ -13,8 +13,62 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "eslint-plugin-import-helpers"
     ],
     "rules": {
+        "import/no-duplicates": [
+            "error",
+            {
+                "considerQueryString": true
+            }
+        ],
+        "import-helpers/order-imports": [
+            "warn",
+            {
+                "newlinesBetween": "always",
+                "groups": [
+                    "/react$/",
+                    "/^react/",
+                    "/^@emotion/",
+                    "/^axios/",
+                    "/^date-fns/",
+                    "/^faker/",
+                    "/^formik/",
+                    "/^jwt-decode/",
+                    "/^lodash/",
+                    "/^query-string/",
+                    "/^uuid/",
+                    "/^yup/",
+                    "/^assets/",
+                    "/^config/",
+                    "/^html/",
+                    "/^middlewares/",
+                    "/^model/",
+                    "/^routes/",
+                    "/^services/",
+                    "/^tests/",
+                    "/^tokens/",
+                    "/^uploads/",
+                    "/^utils/",
+                    "/^websockets/",
+                    [
+                        "module"
+                    ],
+                    [
+                        "/^~//"
+                    ],
+                    [
+                        "parent",
+                        "sibling",
+                        "index"
+                    ]
+                ],
+                "alphabetize": {
+                    "order": "asc",
+                    "ignoreCase": true
+                }
+            }
+        ]
     }
 }
