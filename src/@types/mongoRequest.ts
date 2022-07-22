@@ -1,3 +1,4 @@
+import { Element } from '~models/element'
 import { ObjectId } from 'mongodb'
 
 export interface GenericType {
@@ -45,9 +46,7 @@ export interface UpdateIetmInSubArrayProps {
 
 export interface AddIetmInSubArrayProps {
   collection: string;
-  _idRef: ObjectId;
-  item: object;
-  code?: string;
+  item: Element;
 }
 
 export interface inactivateAnItemInArrayByIdProps {
