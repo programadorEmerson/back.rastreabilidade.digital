@@ -11,12 +11,12 @@ import WebSocket from './websockets'
 
 const app = express()
 const { errorHandler } = new Validations()
-const user = new RoutesUser()
+const { getRouterUser } = new RoutesUser()
 const server = http.createServer(app)
 
 app.use(cors())
 app.use(express.json())
-app.use('/user', user.getRouter())
+app.use('/user', getRouterUser())
 app.use(errorHandler)
 
 new WebSocket(

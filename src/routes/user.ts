@@ -22,7 +22,7 @@ export class RoutesUser {
     this.router.get('/me', tokenValidator, me)
   }
 
-  public getRouter (): Router {
+  public getRouterUser (): Router {
     return this.router
   }
 }
