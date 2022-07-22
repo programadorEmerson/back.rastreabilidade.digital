@@ -18,7 +18,7 @@ export class Validations {
     next()
   }
 
-  async userValidator (req: Request, _res: Response, next: NextFunction) {
+  async userValidator (req: Request, res: Response, next: NextFunction) {
     try {
       const userSchema = Yup.object().shape({
         name: Yup.string()
@@ -60,12 +60,12 @@ export class Validations {
     }
   }
 
-  tokenValidator = async (req: Request, _res: Response, next: NextFunction) => {
+  tokenValidator = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { authorization } = req.headers
       jwt.verify(authorization, SECRET)
       const { _id } = jwtDecode(authorization) as User
-      req.body._idRef = new ObjectId(_id)
+      req.body.userRequest = new ObjectId(_id)
       next()
     } catch (error) {
       throw new Error('Invalid token')

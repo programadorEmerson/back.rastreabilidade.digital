@@ -1,5 +1,5 @@
 import { connection } from '~config/mongoConnection'
-import { collecionsEnum } from '~utils/colections'
+import { collecionsEnum, errorEnum } from '~utils/enum.colections'
 import { SECRET } from '~utils/exports.utils'
 import { compare, genSalt, hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -42,41 +42,39 @@ export class User {
   findUserById = async (_id: ObjectId): Promise<User> => {
     const db = await connection()
     const collectionDb = db.collection(collecionsEnum.USERS)
-    const result = await collectionDb.findOne({ _id })
-    return result
+    return await collectionDb.findOne({ _id })
   }
 
   findUserByEmail = async (email: string): Promise<User> => {
     const db = await connection()
     const collectionDb = db.collection(collecionsEnum.USERS)
-    const result = await collectionDb.findOne({ email })
-    return result
+    return await collectionDb.findOne({ email })
   }
 
   create = async (): Promise<ObjectId> => {
     const db = await connection()
     const collectionDb = db.collection(collecionsEnum.USERS)
-    const { insertedId } = await collectionDb.insertOne(this.getUser())
-    return insertedId as ObjectId
+    const { insertedId: _id } = await collectionDb.insertOne(this.getUser())
+    return _id as ObjectId
   }
 
   createUser = async (): Promise<User> => {
     const { password, email } = this
     const userExists = await this.findUserByEmail(email)
 
-    if (userExists) throw new Error('This user already exists')
-    const pass = await hash(password, await genSalt(12))
-    this.updateUserPass(pass)
-    const insertedId = await this.create()
+    if (userExists) throw new Error(errorEnum.USER_EXISTS)
+    const { updateUserPass } = this
+    updateUserPass(await hash(password, await genSalt(12)))
     const { password: _, ...rest } = this.getUser()
-    return { _id: insertedId, ...rest } as User
+    const _id = await this.create()
+    return { _id, ...rest } as User
   }
 
   signIn = async (): Promise<User> => {
     const userExists = await this.findUserByEmail(this.email)
-    if (!userExists) throw new Error('Invalid email or password')
+    if (!userExists) throw new Error(errorEnum.INVALID_EMAIL_OR_PASS)
     const isValid = await compare(this.password, userExists.password)
-    if (!isValid) throw new Error('Invalid email or password')
+    if (!isValid) throw new Error(errorEnum.INVALID_EMAIL_OR_PASS)
     return userExists as User
   }
 

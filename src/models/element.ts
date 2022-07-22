@@ -1,5 +1,5 @@
 import { connection } from '~config/mongoConnection'
-import { collecionsEnum } from '~utils/colections'
+import { collecionsEnum, errorEnum } from '~utils/enum.colections'
 import { ObjectId } from 'mongodb'
 
 import { Authorized } from './authorized'
@@ -37,7 +37,7 @@ export class Element {
     const db = await connection()
     const elements = await this.getAllItems()
     const exist = elements.some((element) => element.code === this.code)
-    if (exist) throw new Error('This code is already in use')
+    if (exist) throw new Error(errorEnum.CODE_EXISTS)
 
     const insertItem = async () => {
       this.updateIdUser(new ObjectId())

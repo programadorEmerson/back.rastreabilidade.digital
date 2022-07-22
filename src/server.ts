@@ -10,14 +10,14 @@ import * as io from 'socket.io'
 import WebSocket from './websockets'
 
 const app = express()
-const meddlewares = new Validations()
+const { errorHandler } = new Validations()
 const user = new RoutesUser()
 const server = http.createServer(app)
 
 app.use(cors())
 app.use(express.json())
 app.use('/user', user.getRouter())
-app.use(meddlewares.errorHandler)
+app.use(errorHandler)
 
 new WebSocket(
   new io.Server(server, {
