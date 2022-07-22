@@ -1,14 +1,14 @@
 /* eslint-disable n/no-deprecated-api */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { MONGO_DB_URL } from '~utils/exports.utils'
 import { MongoClient } from 'mongodb'
 import url from 'url'
-import { MONGO_DB_URL } from '~utils/exports.utils'
 
 const DB_NAME = url.parse(MONGO_DB_URL).pathname.substr(1)
 
 let cachedDb = null
 
-const connection = () => {
+export const connection = () => {
   if (cachedDb) {
     return cachedDb
   }

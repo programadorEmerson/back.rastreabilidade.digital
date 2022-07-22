@@ -6,50 +6,46 @@ import { createUser, signIn, getUserById } from './functions/user'
 import { Rule } from './rules'
 
 export class User {
-  _id: ObjectId
-  name: string
-  email: string
-  createdAt: string
-  active: boolean
-  password: string
-  urlImage: string
-  rules: Rule[]
+  _id: ObjectId = new ObjectId()
+  name: string = ''
+  email: string = ''
+  createdAt: string = new Date().toISOString()
+  active: boolean = true
+  password: string | undefined
+  urlImage: string = ''
+  rules: Rule[] = undefined
 
-  constructor (user: User) {
-    this._id = user._id ? new ObjectId(user._id) : new ObjectId()
-    this.name = user.name || ''
-    this.email = user.email || ''
-    this.createdAt = user.createdAt || new Date().toISOString()
-    this.active = user.active || true
-    this.password = user.password || undefined
-    this.urlImage = user.urlImage || ''
-    this.rules = user.rules || []
+  constructor (user?: User) {
+    if (user) {
+      const keysProduct = Object.keys(user)
+      keysProduct.forEach((key) => (this[key] = user[key]))
+    }
   }
 
   updateUser (user: User): void {
-    const id = user._id ? new ObjectId(user._id) : new ObjectId()
-    const createdAt = user.createdAt || new Date().toISOString()
-    const active = user.active ? user.active : true
-    const rules = user.rules || undefined
-
-    this._id = id
-    this.name = user.name
-    this.email = user.email
-    this.createdAt = createdAt
-    this.password = user.password
-    this.urlImage = user.urlImage
-    this.active = active
-    this.rules = rules
-  }
-
-  convertToJSON (): any {
-    const { rules, password, ...rest } = this
-    return { ...rest }
+    const keysProduct = Object.keys(user)
+    keysProduct.forEach((key) => {
+      if (key === '_id') {
+        const value = user[key] ? user[key] : new ObjectId()
+        this[key] = value
+      } else if (key === 'createdAt') {
+        const value = user[key] ? user[key] : new Date().toISOString()
+        this[key] = value
+      } else if (key === 'active') {
+        const value = user[key] ? user[key] : true
+        this[key] = value
+      } else if (key === 'rules') {
+        const value = user[key] ? user[key] : undefined
+        this[key] = value
+      }
+      this[key] = user[key]
+    })
   }
 
   createToken = (getRules: boolean = false) => {
     const rules = getRules ? this.rules : undefined
-    return jwt.sign({ ...this.convertToJSON(), rules }, SECRET, {
+    const { password, ...rest } = this
+    return jwt.sign({ ...rest, rules }, SECRET, {
       expiresIn: '24h'
     })
   }
@@ -60,8 +56,7 @@ export class User {
   }
 
   login = async (): Promise<string> => {
-    const { email, password } = this
-    this.updateUser(await signIn({ email, password }))
+    this.updateUser(await signIn(this))
     const token = this.createToken()
     return token
   }

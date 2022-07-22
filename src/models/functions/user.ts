@@ -1,35 +1,36 @@
-import connection from '~config/mongoConnection'
+
 import { User } from '~models/user'
-import { SigninType } from '~types/signin'
 import { genSalt, hash, compare } from 'bcrypt'
 import { ObjectId } from 'mongodb'
 
-export const createUser = async (user: User): Promise<User> => {
-  const db = await connection()
-  const collection = await db.collection('users')
-  const userExists = await collection.findOne({ email: user.email })
+import { findOne, createOne } from './mongoDb'
+import { CREATE_ONE, errosByEnums, FIND_ONE, GET_BY_ID, USERS } from './translation.codes'
 
-  if (userExists) throw new Error('User already exists')
-  const password = await hash(user.password, await genSalt(12))
-  const { insertedId } = await collection.insertOne({ ...user, password })
+export const createUser = async (user: User): Promise<User> => {
+  const { email, password } = user
+  const userExists = await findOne<User>({ collection: USERS, field: { email } })
+
+  if (userExists) throw new Error(errosByEnums(USERS, CREATE_ONE))
+  const pass = await hash(password, await genSalt(12))
+  const insertedId = await createOne({
+    collection: 'users',
+    data: { ...user, password: pass }
+  })
   const { password: _, ...rest } = user
   return { _id: insertedId, ...rest } as User
 }
 
-export const getUserById = async (id: ObjectId): Promise<User> => {
-  const db = await connection()
-  const users = await db.collection('users')
-  const user = await users.findOne({ _id: id })
-  if (!user) throw new Error('User not found')
+export const getUserById = async (_id: ObjectId): Promise<User> => {
+  const user = await findOne<User>({ collection: USERS, field: { _id } })
+  if (!user) throw new Error(errosByEnums(USERS, GET_BY_ID))
   const { password: _, ...rest } = user
   return rest as User
 }
 
-export const signIn = async ({ email, password }: SigninType): Promise<User> => {
-  const db = await connection()
-  const userExists = (await db.collection('users').findOne({ email }))
-  if (!userExists) throw new Error('Incorrect email or password')
+export const signIn = async ({ email, password }: User): Promise<User> => {
+  const userExists = await findOne<User>({ collection: USERS, field: { email } })
+  if (!userExists) throw new Error(errosByEnums(USERS, FIND_ONE))
   const isValid = await compare(password, userExists.password)
-  if (!isValid) throw new Error('Incorrect email or password')
+  if (!isValid) throw new Error(errosByEnums(USERS, FIND_ONE))
   return userExists as User
 }

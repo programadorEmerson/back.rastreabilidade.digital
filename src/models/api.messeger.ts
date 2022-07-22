@@ -1,4 +1,4 @@
-import { SendFileProps, SendMessageLinkProps, SendMessageProps } from '~types/messages'
+
 import fs from 'fs'
 import { create, Whatsapp, SocketState } from 'venom-bot'
 
@@ -26,7 +26,7 @@ class ApiMesseger {
     this.initialize(_id)
   }
 
-  async sendText ({ to, body }: SendMessageProps) {
+  async sendText ({ to, body }) {
     await this.client.sendText(to, body)
   }
 
@@ -42,7 +42,7 @@ class ApiMesseger {
     })
   }
 
-  async sendFile ({ to }: SendFileProps) {
+  async sendFile ({ to }) {
     await this.client
       .sendImage(
         to,
@@ -58,7 +58,7 @@ class ApiMesseger {
       })
   }
 
-  async sendLinkPreview ({ to, body, url }: SendMessageLinkProps) {
+  async sendLinkPreview ({ to, body, url }) {
     (await this.client.sendLinkPreview(to, url, body)) as any
   }
 

@@ -1,5 +1,6 @@
 
 import { Validations } from '~middlewares/validations'
+import { RoutesProduct } from '~routes/product'
 import { RoutesUser } from '~routes/user'
 import { PORT } from '~utils/exports.utils'
 import cors from 'cors'
@@ -12,11 +13,13 @@ import WebSocket from './websockets'
 const app = express()
 const meddlewares = new Validations()
 const user = new RoutesUser()
+const product = new RoutesProduct()
 const server = http.createServer(app)
 
 app.use(cors())
 app.use(express.json())
 app.use('/user', user.getRouter())
+app.use('/product', product.getRouter())
 app.use(meddlewares.errorHandler)
 
 new WebSocket(

@@ -1,12 +1,12 @@
 // import jwtDecode from 'jwt-decode'
+// import ApiMesseger from '~models/api.messeger'
 import * as io from 'socket.io'
 // import { User } from '~models/user'
-import ApiMesseger from '~models/api.messeger'
 
 // rewrite class
 class Sockets {
   private io: io.Server
-  private whatsApp = ApiMesseger
+  // private whatsApp = ApiMesseger
   constructor (io: io.Server) {
     this.io = io
   }
